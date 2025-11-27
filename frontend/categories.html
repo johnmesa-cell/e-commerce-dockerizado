@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Categorías | Music Tools</title>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <header>
+    <div class="nav-bar">
+      <div class="logo"></div>
+      <nav>
+        <button class="menu-btn" onclick="window.location.href='index.html'">Inicio</button>
+        <button class="menu-btn" onclick="window.location.href='tienda.html'">Tienda</button>
+        <button class="menu-btn" onclick="window.location.href='categories.html'">Categorias</button>
+        <button class="menu-btn" onclick="window.location.href='blog.html'">Comunidad</button>
+      </nav>
+      <div style="margin-left: auto; display: flex; align-items: center;">
+        <input type="text" placeholder="Buscar productos, marcas, instrumentos..." class="search-box" id="buscarInput" />
+        
+        <!-- Acciones de usuario: Carrito y Autenticación -->
+        <div class="user-actions">
+          <!-- Botón del carrito -->
+          <button class="cart-btn" onclick="window.location.href='cart.html'" title="Ver carrito">
+            🛒 <span id="cart-count">0</span>
+          </button>
+          
+          <!-- Botón de login (visible cuando NO hay sesión) -->
+          <button id="login-btn" class="auth-btn" onclick="window.location.href='login.html'">
+            Iniciar Sesión
+          </button>
+          
+          <!-- Info de usuario (visible cuando HAY sesión) -->
+          <div id="user-info" style="display: none;">
+            <span id="user-name"></span>
+            <button id="logout-btn">Cerrar Sesión</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <h1 class="main-title">Explora por Categoría</h1>
+
+    <section class="categories-grid">
+      <a class="category-card" href="tienda.html?category=Guitarras" aria-label="Guitarras">
+        <div class="category-card-img" style="background-image:url('assets/images/Fender Telecaster.jpg')"></div>
+        <h3>Guitarras</h3>
+        <p>Elige entre eléctricas y acústicas para todos los niveles.</p>
+      </a>
+      
+      <a class="category-card" href="tienda.html?category=Teclados y Pianos" aria-label="Teclados">
+        <div class="category-card-img" style="background-image:url('assets/images/Yamaha PSR-E363.jpg')"></div>
+        <h3>Teclados y Pianos</h3>
+        <p>Pianos digitales, sintetizadores y teclados MIDI.</p>
+      </a>
+      
+      <a class="category-card" href="tienda.html?category=Batería y Percusión" aria-label="Baterías">
+        <div class="category-card-img" style="background-image:url('assets/images/Roland TD-1DMK.png')"></div>
+        <h3>Batería y Percusión</h3>
+        <p>Kits acústicos y electrónicos para todos los estilos.</p>
+      </a>
+      
+      <a class="category-card" href="tienda.html?category=Audio Profesional" aria-label="Audio Profesional">
+        <div class="category-card-img" style="background-image:url('assets/images/Shure SM58.png')"></div>
+        <h3>Audio Profesional</h3>
+        <p>Micrófonos, interfaces y monitores de estudio.</p>
+      </a>
+
+      <a class="category-card" href="tienda.html?category=Vientos" aria-label="Vientos">
+        <div class="category-card-img" style="background-image:url('assets/images/logo Music Tools.png')"></div>
+        <h3>Vientos</h3>
+        <p>Saxofones, flautas, trompetas y clarinetes.</p>
+      </a>
+
+      <a class="category-card" href="tienda.html?category=Cuerdas" aria-label="Cuerdas">
+        <div class="category-card-img" style="background-image:url('assets/images/logo Music Tools.png')"></div>
+        <h3>Cuerdas</h3>
+        <p>Violines, violas, violonchelos y ukeleles.</p>
+      </a>
+
+      <a class="category-card" href="tienda.html?category=Accesorios" aria-label="Accesorios">
+        <div class="category-card-img" style="background-image:url('assets/images/logo Music Tools.png')"></div>
+        <h3>Accesorios</h3>
+        <p>Cables, soportes, fundas y pedales.</p>
+      </a>
+
+      <a class="category-card" href="tienda.html?category=DJ y Producción" aria-label="DJ y Producción">
+        <div class="category-card-img" style="background-image:url('assets/images/logo Music Tools.png')"></div>
+        <h3>DJ y Producción</h3>
+        <p>Controladoras, mezcladores y equipos para DJ.</p>
+      </a>
+      
+      <a class="category-card" href="tienda.html?category=all" aria-label="Todas las categorías">
+        <div class="category-card-img" style="background-image:url('assets/images/logo Music Tools.png')"></div>
+        <h3>Todas</h3>
+        <p>Ver todos los productos disponibles en la tienda.</p>
+      </a>
+    </section>
+
+  </main>
+
+  <footer>
+    &copy; 2025 Music Tools. Todos los derechos reservados.
+  </footer>
+
+  <script src="assets/js/search.js"></script>
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/cart.js"></script>
+</body>
+</html>

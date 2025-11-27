@@ -1,0 +1,240 @@
+/* ============================================
+   ESTILOS PARA LOGIN Y REGISTRO
+   Adaptado al tema oscuro principal
+   ============================================ */
+
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 200px);
+  padding: 40px 20px;
+  background: transparent; /* Usar el fondo azul oscuro del body */
+}
+
+.auth-box {
+  background: #1A3A6B; /* Azul oscuro consistente */
+  border-radius: 12px;
+  padding: 40px;
+  max-width: 450px;
+  width: 100%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  border: 2px solid #FFED4E; /* Borde amarillo */
+  transition: all 0.3s;
+}
+
+.auth-box:hover {
+  box-shadow: 0 12px 50px rgba(255, 237, 78, 0.2);
+}
+
+.auth-box h1 {
+  font-size: 32px; /* Más grande */
+  margin-bottom: 10px;
+  color: #FFED4E; /* Amarillo para título */
+  text-align: center;
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.auth-subtitle {
+  text-align: center;
+  color: #E0E0E0; /* Gris claro */
+  margin-bottom: 30px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #FFFFFF; /* Blanco para etiquetas */
+  font-size: 14px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid rgba(255, 237, 78, 0.3);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Montserrat', sans-serif;
+  transition: all 0.3s;
+  background: rgba(255, 255, 255, 0.95);
+  color: #0F2A60;
+  box-sizing: border-box; /* ✅ AGREGADO: Soluciona el desalineamiento */
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #FFED4E;
+  box-shadow: 0 0 0 3px rgba(255, 237, 78, 0.1);
+  background: #FFFFFF;
+}
+
+.form-group input::placeholder {
+  color: #666666;
+}
+
+.form-group small {
+  display: block;
+  margin-top: 5px;
+  font-size: 12px;
+  color: #B0B0B0; /* Gris medio claro */
+}
+
+.form-group-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.form-group-checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #FFED4E; /* Color del checkbox */
+}
+
+.form-group-checkbox label {
+  font-size: 14px;
+  color: #E0E0E0; /* Gris claro */
+  cursor: pointer;
+  margin: 0;
+}
+
+.auth-submit-btn {
+  width: 100%;
+  padding: 16px; /* Más padding */
+  background: #FFED4E; /* Amarillo consistente */
+  color: #0F2A60;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px; /* Más grande */
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.auth-submit-btn:hover {
+  background: #FFF176; /* Amarillo más claro */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 237, 78, 0.4);
+}
+
+.auth-submit-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.message {
+  margin-top: 15px;
+  padding: 12px 15px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  display: none;
+}
+
+.message.error {
+  background: rgba(255, 82, 82, 0.15); /* Rojo con transparencia */
+  color: #FF5252;
+  border: 2px solid #FF5252;
+}
+
+.message.success {
+  background: rgba(76, 175, 80, 0.15); /* Verde con transparencia */
+  color: #4CAF50;
+  border: 2px solid #4CAF50;
+}
+
+.auth-footer {
+  margin-top: 25px;
+  text-align: center;
+  padding-top: 20px;
+  border-top: 2px solid rgba(255, 237, 78, 0.3); /* Línea amarilla tenue */
+}
+
+.auth-footer p {
+  color: #E0E0E0; /* Gris claro */
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.auth-footer a {
+  color: #FFED4E; /* Amarillo para enlaces */
+  font-weight: 700; /* Más bold */
+  text-decoration: none;
+  transition: all 0.3s;
+  display: inline-block;
+}
+
+.auth-footer a:hover {
+  color: #FFF176; /* Amarillo más claro al hover */
+  text-decoration: underline;
+  transform: translateY(-1px);
+}
+
+/* Estilos adicionales para validación de contraseña */
+.password-requirements {
+  margin-top: 10px;
+  padding: 12px;
+  background: rgba(255, 237, 78, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 237, 78, 0.3);
+}
+
+.password-requirements p {
+  color: #E0E0E0;
+  font-size: 12px;
+  margin: 5px 0;
+  padding-left: 20px;
+  position: relative;
+}
+
+.password-requirements p::before {
+  content: "•";
+  position: absolute;
+  left: 5px;
+  color: #FFED4E;
+  font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .auth-container {
+    padding: 20px 15px;
+  }
+
+  .auth-box {
+    padding: 30px 20px;
+  }
+
+  .auth-box h1 {
+    font-size: 26px;
+  }
+  
+  .auth-submit-btn {
+    padding: 14px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-box {
+    padding: 25px 15px;
+  }
+
+  .auth-box h1 {
+    font-size: 24px;
+  }
+}
+

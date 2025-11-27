@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tienda | Music Tools</title>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <header>
+    <div class="nav-bar">
+      <div class="logo"></div>
+      <nav>
+        <button class="menu-btn" onclick="window.location.href='index.html'">Inicio</button>
+        <button class="menu-btn" onclick="window.location.href='tienda.html'">Tienda</button>
+        <button class="menu-btn" onclick="window.location.href='categories.html'">Categorías</button>
+        <button class="menu-btn" onclick="window.location.href='blog.html'">Comunidad</button>
+      </nav>
+      <div style="margin-left: auto; display: flex; align-items: center;">
+        <input type="text" placeholder="Buscar productos, marcas, instrumentos..." class="search-box" id="buscarInput" />
+        
+        <!-- Acciones de usuario: Carrito y Autenticación -->
+        <div class="user-actions">
+          <!-- Botón del carrito -->
+          <button class="cart-btn" onclick="window.location.href='cart.html'" title="Ver carrito">
+            🛒 <span id="cart-count">0</span>
+          </button>
+          
+          <!-- Botón de login (visible cuando NO hay sesión) -->
+          <button id="login-btn" class="auth-btn" onclick="window.location.href='login.html'">
+            Iniciar Sesión
+          </button>
+          
+          <!-- Info de usuario (visible cuando HAY sesión) -->
+          <div id="user-info" style="display: none;">
+            <span id="user-name"></span>
+            <button id="logout-btn">Cerrar Sesión</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <h1 class="main-title">Tienda de instrumentos y equipos musicales</h1>
+
+    <section class="main-categories tienda-categories">
+      <a class="category" data-category="all" href="tienda.html?category=all" aria-pressed="false">Todas</a>
+      <a class="category" data-category="Guitarras" href="tienda.html?category=Guitarras" aria-pressed="false">Guitarras</a>
+      <a class="category" data-category="Teclados y Pianos" href="tienda.html?category=Teclados y Pianos" aria-pressed="false">Teclados</a>
+      <a class="category" data-category="Batería y Percusión" href="tienda.html?category=Batería y Percusión" aria-pressed="false">Baterías</a>
+      <a class="category" data-category="Audio Profesional" href="tienda.html?category=Audio Profesional" aria-pressed="false">Audio</a>
+      <a class="category" data-category="Vientos" href="tienda.html?category=Vientos" aria-pressed="false">Vientos</a>
+      <a class="category" data-category="Cuerdas" href="tienda.html?category=Cuerdas" aria-pressed="false">Cuerdas</a>
+      <a class="category" data-category="Accesorios" href="tienda.html?category=Accesorios" aria-pressed="false">Accesorios</a>
+    </section>
+
+
+    <section id="productos-container" class="productos-grid">
+      <!-- Los productos se cargarán dinámicamente desde `assets/json/data.json` mediante `assets/js/app.js` -->
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2025 Music Tools. Todos los derechos reservados.
+  </footer>
+  <!-- Modal para detalle de producto -->
+  <div id="modal-overlay" class="modal-overlay" aria-hidden="true">
+    <!--<div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button class="close-btn" id="modal-close" aria-label="Cerrar">×</button>
+      <div class="modal-image">
+        <img id="modal-img" src="" alt="Imagen del producto">
+      </div>
+      <div class="modal-body">
+        <h2 id="modal-title">Título del producto</h2>
+        <p id="modal-desc">Descripción del producto</p>
+        <p class="price" id="modal-price">Precio</p>
+        <p id="modal-category">Categoría: <span></span></p>
+      </div>
+    </div>-->
+  </div>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/cart.js"></script>
+
+</body>
+</html>
+

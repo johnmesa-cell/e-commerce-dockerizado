@@ -1,0 +1,44 @@
+[
+  {
+    "nombre": "Guitarra Eléctrica Fender Stratocaster",
+    "categoria": "guitarras",
+    "precio": 899.99,
+    "descripcion": "Guitarra eléctrica de alta gama con cuerpo de aliso y mástil de arce.",
+    "imagen": "assets/images/Fender Telecaster.jpg"
+  },
+  {
+    "nombre": "Teclado Yamaha PSR-E373",
+    "categoria": "teclados",
+    "precio": 279.00,
+    "descripcion": "Teclado portátil con 61 teclas y efectos integrados ideales para principiantes.",
+    "imagen": "assets/images/Yamaha PSR-E363.jpg"
+  },
+  {
+    "nombre": "Batería Acústica Pearl Export",
+    "categoria": "baterias",
+    "precio": 749.99,
+    "descripcion": "Kit de batería acústica con sonidos potentes y construcción robusta.",
+    "imagen": "assets/images/Roland TD-1DMK.png"
+  },
+  {
+    "nombre": "Micrófono Shure SM58",
+    "categoria": "microfonos",
+    "precio": 99.95,
+    "descripcion": "Micrófono dinámico para voces con patrón polar cardioide y cuerpo resistente.",
+    "imagen": "assets/images/Shure SM58.png"
+  },
+  {
+    "nombre": "Guitarra Acústica Yamaha FG800",
+    "categoria": "guitarras",
+    "precio": 199.99,
+    "descripcion": "Guitarra acústica de cuerpo completo, ideal para estudiantes y principiantes.",
+    "imagen": "assets/images/Fender Telecaster.jpg"
+  },
+  {
+    "nombre": "Teclado MIDI Akai MPK Mini",
+    "categoria": "teclados",
+    "precio": 119.00,
+    "descripcion": "Controlador MIDI compacto con pads y knobs para producción musical.",
+    "imagen": "assets/images/Yamaha PSR-E363.jpg"
+  }
+]

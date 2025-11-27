@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Registrarse | Music Tools</title>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/normalize.css" />
+  <link rel="stylesheet" href="assets/css/auth.css" />
+</head>
+<body>
+  <header>
+    <div class="nav-bar">
+      <div class="logo"></div>
+      <nav>
+        <button class="menu-btn" onclick="window.location.href='index.html'">Inicio</button>
+        <button class="menu-btn" onclick="window.location.href='tienda.html'">Tienda</button>
+        <button class="menu-btn" onclick="window.location.href='categories.html'">Categorias</button>
+        <button class="menu-btn" onclick="window.location.href='blog.html'">Comunidad</button>
+      </nav>
+      <div style="margin-left: auto; display: flex; align-items: center;">
+        <input type="text" placeholder="Buscar productos, marcas, instrumentos..." class="search-box" id="buscarInput" />
+        
+        <div class="user-actions">
+          <button class="cart-btn" onclick="window.location.href='cart.html'" title="Ver carrito">
+            🛒 <span id="cart-count">0</span>
+          </button>
+          
+          <button id="login-btn" class="auth-btn" onclick="window.location.href='login.html'">
+            Iniciar Sesión
+          </button>
+          
+          <div id="user-info" style="display: none;">
+            <span id="user-name"></span>
+            <button id="logout-btn">Cerrar Sesión</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="auth-container">
+      <div class="auth-box">
+        <h1>Crear Cuenta</h1>
+        <p class="auth-subtitle">Regístrate en Music Tools</p>
+        
+        <form id="register-form">
+          <div class="form-group">
+            <label for="name">Nombre Completo</label>
+            <input type="text" id="name" name="name" required placeholder="Juan Pérez" />
+          </div>
+          
+          <div class="form-group">
+            <label for="email">Correo Electrónico</label>
+            <input type="email" id="email" name="email" required placeholder="ejemplo@correo.com" />
+          </div>
+          
+          <div class="form-group">
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" name="password" required placeholder="••••••••" minlength="6" />
+            <small>Mínimo 6 caracteres</small>
+          </div>
+          
+          <div class="form-group">
+            <label for="confirm-password">Confirmar Contraseña</label>
+            <input type="password" id="confirm-password" name="confirm-password" required placeholder="••••••••" />
+          </div>
+          
+          <div class="form-group-checkbox">
+            <input type="checkbox" id="terms" name="terms" required />
+            <label for="terms">Acepto los términos y condiciones</label>
+          </div>
+          
+          <button type="submit" class="auth-submit-btn">Registrarse</button>
+          
+          <div id="register-message" class="message"></div>
+        </form>
+        
+        <div class="auth-footer">
+          <p>¿Ya tienes una cuenta? <a href="login.html">Inicia sesión aquí</a></p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 Music Tools. Todos los derechos reservados.
+  </footer>
+
+  <script src="assets/js/search.js"></script>
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/config.js"></script>  <!-- IMPORTANTE: antes de auth.js -->
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/cart.js"></script>
+</body>
+</html>

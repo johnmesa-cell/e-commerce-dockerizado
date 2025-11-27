@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Carrito de Compras | Music Tools</title>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/normalize.css" />
+  <link rel="stylesheet" href="assets/css/cart.css" />
+</head>
+<body>
+  <header>
+    <div class="nav-bar">
+      <div class="logo"></div>
+      <nav>
+        <button class="menu-btn" onclick="window.location.href='index.html'">Inicio</button>
+        <button class="menu-btn" onclick="window.location.href='tienda.html'">Tienda</button>
+        <button class="menu-btn" onclick="window.location.href='categories.html'">Categorias</button>
+        <button class="menu-btn" onclick="window.location.href='blog.html'">Comunidad</button>
+      </nav>
+      <div style="margin-left: auto; display: flex; align-items: center;">
+        <input type="text" placeholder="Buscar productos, marcas, instrumentos..." class="search-box" id="buscarInput" />
+        
+        <div class="user-actions">
+          <button class="cart-btn" onclick="window.location.href='cart.html'" title="Ver carrito">
+            🛒 <span id="cart-count">0</span>
+          </button>
+          
+          <button id="login-btn" class="auth-btn" onclick="window.location.href='login.html'">
+            Iniciar Sesión
+          </button>
+          
+          <div id="user-info" style="display: none;">
+            <span id="user-name"></span>
+            <button id="logout-btn">Cerrar Sesión</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="cart-container">
+      <h1>Tu Carrito de Compras</h1>
+      
+      <div id="cart-content">
+        <!-- El contenido del carrito se cargará dinámicamente -->
+      </div>
+      
+      <div id="empty-cart" class="empty-cart" style="display: none;">
+        <p>🛒 Tu carrito está vacío</p>
+        <button class="cta-btn" onclick="window.location.href='tienda.html'">Ir a la Tienda</button>
+      </div>
+      
+      <div id="cart-summary" class="cart-summary" style="display: none;">
+        <h2>Resumen del Pedido</h2>
+        <div class="summary-row">
+          <span>Subtotal:</span>
+          <span id="subtotal">$0</span>
+        </div>
+        <div class="summary-row">
+          <span>Envío:</span>
+          <span id="shipping">$0</span>
+        </div>
+        <div class="summary-row total">
+          <span>Total:</span>
+          <span id="total">$0</span>
+        </div>
+        <button class="checkout-btn" id="checkout-btn">Proceder al Pago</button>
+        <button class="clear-cart-btn" id="clear-cart-btn">Vaciar Carrito</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 Music Tools. Todos los derechos reservados.
+  </footer>
+
+  <script src="assets/js/search.js"></script>
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/cart.js"></script>
+  <script>
+    // Renderizar el carrito al cargar la página
+    document.addEventListener('DOMContentLoaded', renderCart);
+  </script>
+</body>
+</html>
