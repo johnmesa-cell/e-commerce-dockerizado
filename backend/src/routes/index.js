@@ -1,24 +1,13 @@
-const express = require('express');
-const router = express.Router();
+const User = require('./User');
+const Product = require('./Product');
+const Category = require('./Category');
+const Order = require('./Order');
+const Cart = require('./Cart');
 
-const authRoutes = require('./auth.routes');
-const productRoutes = require('./product.routes');
-const categoryRoutes = require('./category.routes');
-const orderRoutes = require('./order.routes');
-
-// Montar rutas
-router.use('/auth', authRoutes);
-router.use('/products', productRoutes);
-router.use('/categories', categoryRoutes);
-router.use('/orders', orderRoutes);
-
-// Ruta de prueba
-router.get('/health', (req, res) => {
-    res.json({
-        success: true,
-        message: 'API funcionando correctamente',
-        timestamp: new Date().toISOString()
-    });
-});
-
-module.exports = router;
+module.exports = {
+    User,
+    Product,
+    Category,
+    Order,
+    Cart
+};

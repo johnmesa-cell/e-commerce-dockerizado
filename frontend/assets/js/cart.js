@@ -1,184 +1,246 @@
 // ============================================
-// GESTIÓN DEL CARRITO DE COMPRAS POR USUARIO
+// GESTIÓN DEL CARRITO DE COMPRAS CON BASE DE DATOS
 // ============================================
 
-// Obtener carrito del usuario actual desde localStorage
-function getCart() {
-  return Storage.getUserCart();
-}
+const API_URL = 'http://localhost:3000/api/cart';
 
-// Guardar carrito del usuario actual en localStorage
-function saveCart(cart) {
-  Storage.setUserCart(cart);
-  updateCartCount();
+// Obtener carrito desde el servidor
+async function getCart() {
+  const token = Storage.get('authToken');  // ← CAMBIO AQUÍ
+  if (!token) return [];
+  
+  try {
+    const response = await fetch(API_URL, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    
+    if (!response.ok) throw new Error('Error al obtener carrito');
+    
+    const data = await response.json();
+    return data.success ? data.data : [];
+  } catch (error) {
+    console.error('Error al obtener carrito:', error);
+    return [];
+  }
 }
 
 // Actualizar contador del carrito en el header
-function updateCartCount() {
-  const cart = getCart();
-  const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+async function updateCartCount() {
+  const token = Storage.get('authToken');  // ← CAMBIO AQUÍ
   const cartCountElement = document.getElementById('cart-count');
-  if (cartCountElement) {
-    cartCountElement.textContent = totalItems;
+  
+  if (!cartCountElement) return;
+  
+  if (!token) {
+    cartCountElement.textContent = '0';
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_URL}/count`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      cartCountElement.textContent = data.success ? data.count : '0';
+    }
+  } catch (error) {
+    console.error('Error al actualizar contador:', error);
+    cartCountElement.textContent = '0';
   }
 }
 
 // Agregar producto al carrito
-function addToCart(productId, productData = null) {
-  // Verificar si el usuario está autenticado
+async function addToCart(productId, productData = null) {
   const currentUser = Storage.get('currentUser');
-  if (!currentUser) {
+  const token = Storage.get('authToken');  // ← CAMBIO AQUÍ
+  
+  if (!currentUser || !token) {
     if (confirm('Debes iniciar sesión para agregar productos al carrito. ¿Deseas ir a la página de inicio de sesión?')) {
       window.location.href = 'login.html';
     }
     return;
   }
 
-  const cart = getCart();
-  
-  // Buscar si el producto ya existe en el carrito
-  const existingItem = cart.find(item => item.id === productId);
-  
-  if (existingItem) {
-    // Incrementar cantidad
-    existingItem.quantity = (existingItem.quantity || 1) + 1;
-    alert('Cantidad actualizada en el carrito');
-  } else {
-    // Agregar nuevo producto
-    const newItem = productData || {
-      id: productId,
-      quantity: 1
-    };
-    cart.push(newItem);
-    alert('Producto agregado al carrito');
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ 
+        producto_id: productId, 
+        cantidad: 1 
+      })
+    });
+    
+    const data = await response.json();
+    
+    if (response.ok && data.success) {
+      alert(data.message);
+      await updateCartCount();
+    } else {
+      alert(data.message || 'Error al agregar producto');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Error de conexión al agregar producto');
   }
-  
-  saveCart(cart);
 }
 
 // Eliminar producto del carrito
-function removeFromCart(productId) {
-  let cart = getCart();
-  cart = cart.filter(item => item.id !== productId);
-  saveCart(cart);
+async function removeFromCart(cartItemId) {
+  const token = Storage.get('authToken');  // ← CAMBIO AQUÍ
   
-  // Si estamos en la página del carrito, renderizar de nuevo
-  if (typeof renderCart === 'function') {
-    renderCart();
+  if (!confirm('¿Deseas eliminar este producto del carrito?')) return;
+  
+  try {
+    const response = await fetch(`${API_URL}/${cartItemId}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    
+    const data = await response.json();
+    
+    if (response.ok && data.success) {
+      alert(data.message);
+      renderCart();
+      updateCartCount();
+    } else {
+      alert(data.message || 'Error al eliminar producto');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Error de conexión al eliminar producto');
   }
 }
 
 // Actualizar cantidad de un producto
-function updateQuantity(productId, newQuantity) {
-  const cart = getCart();
-  const item = cart.find(item => item.id === productId);
+async function updateQuantity(cartItemId, newQuantity) {
+  if (newQuantity <= 0) {
+    removeFromCart(cartItemId);
+    return;
+  }
+
+  const token = Storage.get('authToken');  // ← CAMBIO AQUÍ
   
-  if (item) {
-    if (newQuantity <= 0) {
-      removeFromCart(productId);
+  try {
+    const response = await fetch(`${API_URL}/${cartItemId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ cantidad: newQuantity })
+    });
+    
+    const data = await response.json();
+    
+    if (response.ok && data.success) {
+      renderCart();
+      updateCartCount();
     } else {
-      item.quantity = newQuantity;
-      saveCart(cart);
-      
-      // Si estamos en la página del carrito, renderizar de nuevo
-      if (typeof renderCart === 'function') {
-        renderCart();
-      }
+      alert(data.message || 'Error al actualizar cantidad');
     }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Error de conexión al actualizar cantidad');
   }
 }
 
-// Vaciar carrito completo del usuario actual
-function clearCart() {
-  if (confirm('¿Estás seguro de que deseas vaciar el carrito?')) {
-    Storage.removeUserCart();
-    updateCartCount();
+// Vaciar carrito completo
+async function clearCart() {
+  if (!confirm('¿Estás seguro de que deseas vaciar el carrito?')) return;
+  
+  const token = Storage.get('authToken');  // ← CAMBIO AQUÍ
+  
+  try {
+    const response = await fetch(`${API_URL}/clear`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
     
-    // Si estamos en la página del carrito, renderizar de nuevo
-    if (typeof renderCart === 'function') {
+    const data = await response.json();
+    
+    if (response.ok && data.success) {
+      alert(data.message);
       renderCart();
+      updateCartCount();
+    } else {
+      alert(data.message || 'Error al vaciar carrito');
     }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Error de conexión al vaciar carrito');
   }
 }
 
 // Renderizar carrito en cart.html
-function renderCart() {
-  // Verificar si el usuario está autenticado
+async function renderCart() {
   const currentUser = Storage.get('currentUser');
-  if (!currentUser) {
-    const cartContent = document.getElementById('cart-content');
-    const emptyCart = document.getElementById('empty-cart');
-    const cartSummary = document.getElementById('cart-summary');
-    
-    if (cartContent) {
-      cartContent.innerHTML = `
-        <div style="text-align: center; padding: 40px;">
-          <h2>⚠️ Sesión requerida</h2>
-          <p>Debes iniciar sesión para ver tu carrito de compras</p>
-          <button class="cta-btn" onclick="window.location.href='login.html'" style="margin-top: 20px;">
-            Iniciar Sesión
-          </button>
-        </div>
-      `;
-    }
-    if (emptyCart) emptyCart.style.display = 'none';
-    if (cartSummary) cartSummary.style.display = 'none';
-    return;
-  }
-
-  const cart = getCart();
   const cartContent = document.getElementById('cart-content');
   const emptyCart = document.getElementById('empty-cart');
   const cartSummary = document.getElementById('cart-summary');
   
   if (!cartContent) return;
   
+  // Verificar autenticación
+  if (!currentUser) {
+    cartContent.innerHTML = `
+      <div style="text-align: center; padding: 40px;">
+        <h2>⚠️ Sesión requerida</h2>
+        <p>Debes iniciar sesión para ver tu carrito de compras</p>
+        <button class="cta-btn" onclick="window.location.href='login.html'" style="margin-top: 20px;">
+          Iniciar Sesión
+        </button>
+      </div>
+    `;
+    if (emptyCart) emptyCart.style.display = 'none';
+    if (cartSummary) cartSummary.style.display = 'none';
+    return;
+  }
+
+  // Obtener carrito
+  const cart = await getCart();
+  
+  // Carrito vacío
   if (cart.length === 0) {
-    // Mostrar mensaje de carrito vacío
     cartContent.innerHTML = '';
     if (emptyCart) emptyCart.style.display = 'block';
     if (cartSummary) cartSummary.style.display = 'none';
     return;
   }
   
-  // Ocultar mensaje de carrito vacío
+  // Mostrar carrito con productos
   if (emptyCart) emptyCart.style.display = 'none';
   if (cartSummary) cartSummary.style.display = 'block';
   
-  // Renderizar items del carrito con información del usuario
   const userInfo = `<div class="cart-user-info">
-    <p><strong>🛒 Carrito de:</strong> ${currentUser.name || currentUser.email}</p>
+    <p><strong>🛒 Carrito de:</strong> ${currentUser.nombre || currentUser.email}</p>
   </div>`;
-
   
   cartContent.innerHTML = userInfo + cart.map(item => `
     <div class="cart-item" data-id="${item.id}">
-      <img src="${item.imagen || 'assets/images/placeholder.jpg'}" alt="${item.nombre || 'Producto'}">
+      <img src="${item.imagen_url || 'assets/images/placeholder.jpg'}" alt="${item.nombre}">
       <div class="item-details">
-        <h3>${item.nombre || 'Producto'}</h3>
-        <p class="item-price">${item.precio || '$0'}</p>
+        <h3>${item.nombre}</h3>
+        <p class="item-price">$${parseFloat(item.precio).toLocaleString('es-CO')}</p>
       </div>
       <div class="item-quantity">
-        <button class="qty-btn" onclick="updateQuantity(${item.id}, ${item.quantity - 1})">-</button>
-        <span>${item.quantity || 1}</span>
-        <button class="qty-btn" onclick="updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
+        <button class="qty-btn" onclick="updateQuantity(${item.id}, ${item.cantidad - 1})">-</button>
+        <span>${item.cantidad}</span>
+        <button class="qty-btn" onclick="updateQuantity(${item.id}, ${item.cantidad + 1})">+</button>
       </div>
       <div class="item-total">
-        <p>${calculateItemTotal(item)}</p>
+        <p>$${(parseFloat(item.precio) * item.cantidad).toLocaleString('es-CO')}</p>
       </div>
       <button class="remove-btn" onclick="removeFromCart(${item.id})">🗑️</button>
     </div>
   `).join('');
   
-  // Actualizar resumen
   updateCartSummary(cart);
-}
-
-// Calcular total de un item
-function calculateItemTotal(item) {
-  const price = parseFloat(item.precio?.replace('$', '').replace('.', '').replace(',', '.') || 0);
-  const total = price * (item.quantity || 1);
-  return '$' + total.toLocaleString('es-CO');
 }
 
 // Actualizar resumen del carrito
@@ -186,11 +248,10 @@ function updateCartSummary(cart) {
   let subtotal = 0;
   
   cart.forEach(item => {
-    const price = parseFloat(item.precio?.replace('$', '').replace('.', '').replace(',', '.') || 0);
-    subtotal += price * (item.quantity || 1);
+    subtotal += parseFloat(item.precio) * item.cantidad;
   });
   
-  const shipping = subtotal > 100000 ? 0 : 10000; // Envío gratis si supera $100.000
+  const shipping = subtotal > 100000 ? 0 : 10000;
   const total = subtotal + shipping;
   
   const subtotalElement = document.getElementById('subtotal');
@@ -205,7 +266,7 @@ function updateCartSummary(cart) {
 // Evento para botón de checkout
 const checkoutBtn = document.getElementById('checkout-btn');
 if (checkoutBtn) {
-  checkoutBtn.addEventListener('click', function() {
+  checkoutBtn.addEventListener('click', async function() {
     const currentUser = Storage.get('currentUser');
     
     if (!currentUser) {
@@ -214,13 +275,13 @@ if (checkoutBtn) {
       return;
     }
     
-    const cart = getCart();
+    const cart = await getCart();
     if (cart.length === 0) {
       alert('Tu carrito está vacío');
       return;
     }
     
-    alert(`Procesando pedido para ${currentUser.name || currentUser.email}...\n\nFuncionalidad de pago en desarrollo.`);
+    alert(`Procesando pedido para ${currentUser.nombre || currentUser.email}...\n\nFuncionalidad de pago en desarrollo.`);
   });
 }
 
@@ -230,8 +291,13 @@ if (clearCartBtn) {
   clearCartBtn.addEventListener('click', clearCart);
 }
 
-// Inicializar contador del carrito al cargar cualquier página
+// Inicializar al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
   updateCartCount();
+  
+  // Si estamos en la página del carrito, renderizarlo
+  if (document.getElementById('cart-content')) {
+    renderCart();
+  }
 });
 
