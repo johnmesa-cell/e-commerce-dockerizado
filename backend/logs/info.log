@@ -54,3 +54,13 @@
 {"timestamp":"2025-11-27T21:49:18.774Z","level":"info","message":"Entorno: development"}
 {"timestamp":"2025-11-27T21:59:47.015Z","level":"info","message":"Servidor corriendo en puerto 3000"}
 {"timestamp":"2025-11-27T21:59:47.020Z","level":"info","message":"Entorno: development"}
+{"timestamp":"2025-12-01T20:52:19.515Z","level":"info","message":"Servidor corriendo en puerto 3000"}
+{"timestamp":"2025-12-01T20:52:19.552Z","level":"info","message":"Entorno: production"}
+{"timestamp":"2025-12-01T21:18:15.142Z","level":"info","message":"Servidor corriendo en puerto 3000"}
+{"timestamp":"2025-12-01T21:18:15.153Z","level":"info","message":"Entorno: production"}
+{"timestamp":"2025-12-01T21:21:57.334Z","level":"info","message":"Servidor corriendo en puerto 3000"}
+{"timestamp":"2025-12-01T21:21:57.343Z","level":"info","message":"Entorno: production"}
+{"timestamp":"2025-12-01T21:38:26.121Z","level":"info","message":"Servidor corriendo en puerto 3000"}
+{"timestamp":"2025-12-01T21:38:26.129Z","level":"info","message":"Entorno: production"}
+{"timestamp":"2025-12-01T21:46:50.480Z","level":"info","message":"Servidor corriendo en puerto 3000"}
+{"timestamp":"2025-12-01T21:46:50.487Z","level":"info","message":"Entorno: production"}

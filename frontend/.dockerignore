@@ -1,0 +1,29 @@
+# Archivos de desarrollo
+node_modules
+.git
+.gitignore
+.DS_Store
+Thumbs.db
+
+# Archivos de configuración local
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDEs
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Documentación
+README.md
+*.md
+
+# Archivos temporales
+.tmp
+.cache
+dist
+build

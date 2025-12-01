@@ -1,0 +1,17 @@
+# backend/.dockerignore
+node_modules
+npm-debug.log
+.env
+.git
+.gitignore
+*.md
+logs/*
+!logs/.gitkeep
+.vscode
+.idea
+coverage
+.nyc_output
+*.swp
+*.swo
+*~
+.DS_Store

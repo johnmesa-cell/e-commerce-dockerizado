@@ -1,0 +1,43 @@
+# .gitignore (raíz del proyecto)
+
+# Variables de entorno
+.env
+
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Datos de bases de datos
+mysql-master/data/
+mysql-slave/data/
+postgres_data/
+mongo_data/
+
+# Logs del Sistema
+logs/
+*.log
+
+# Sistema Operativo
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build outputs
+dist/
+build/
+.cache/
+
+# Docker
+docker-compose.override.yml
+
+# Temporal
+.tmp/
+temp/

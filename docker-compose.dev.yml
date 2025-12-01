@@ -1,0 +1,21 @@
+# docker-compose.dev.yml
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+    ports:
+      - "${BACKEND_PORT:-3000}:3000"
+
+  frontend:
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+    ports:
+      - "${FRONTEND_PORT:-5173}:80"

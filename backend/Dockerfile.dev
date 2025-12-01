@@ -1,0 +1,19 @@
+# backend/Dockerfile.dev
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Instalar nodemon globalmente para hot-reload
+RUN npm install -g nodemon
+
+# Copiar package.json
+COPY package*.json ./
+
+# Instalar todas las dependencias (incluidas dev)
+RUN npm install
+
+# Exponer puerto
+EXPOSE 3000
+
+# Comando con nodemon para desarrollo (ruta correcta)
+CMD ["nodemon", "app.js"]

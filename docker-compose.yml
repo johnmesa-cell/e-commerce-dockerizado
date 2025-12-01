@@ -1,0 +1,171 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  # Base de datos primaria (escrituras)
+  db-primary:
+    build:
+      context: ./mysql-master
+      dockerfile: Dockerfile
+    container_name: ecommerce-db-primary
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PRIMARY_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${DB_PRIMARY_PORT:-3306}:3306"
+    volumes:
+      - db_primary_data:/var/lib/mysql
+      - ./backend/database/schema.sql:/docker-entrypoint-initdb.d/02-schema.sql
+      - ./backend/database/seeds.sql:/docker-entrypoint-initdb.d/03-seeds.sql
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PRIMARY_ROOT_PASSWORD}"]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+      start_period: 40s
+
+  # Base de datos réplica (lecturas)
+  db-replica:
+    build:
+      context: ./mysql-slave
+      dockerfile: Dockerfile
+    container_name: ecommerce-db-replica
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_REPLICA_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${DB_REPLICA_PORT:-3307}:3306"
+    volumes:
+      - db_replica_data:/var/lib/mysql
+    networks:
+      - backend
+    depends_on:
+      db-primary:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_REPLICA_ROOT_PASSWORD}"]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ecommerce-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: ${BACKEND_PORT:-3000}
+      
+      # Configuración Master (escrituras)
+      DB_MASTER_HOST: db-primary
+      DB_MASTER_PORT: 3306
+      DB_MASTER_USER: ${DB_USER}
+      DB_MASTER_PASSWORD: ${DB_PASSWORD}
+      DB_MASTER_DATABASE: ${DB_NAME}
+      
+      # Configuración Slave (lecturas)
+      DB_SLAVE_HOST: db-replica
+      DB_SLAVE_PORT: 3306
+      DB_SLAVE_USER: ${DB_USER}
+      DB_SLAVE_PASSWORD: ${DB_PASSWORD}
+      DB_SLAVE_DATABASE: ${DB_NAME}
+      
+      JWT_SECRET: ${JWT_SECRET}
+    ports:
+      - "${BACKEND_PORT:-3000}:3000"
+    volumes:
+      - ./backend/logs:/app/logs
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      db-primary:
+        condition: service_healthy
+      db-replica:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"] 
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ecommerce-frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-5173}:80"
+    networks:
+      - frontend
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+
+  # phpMyAdmin - Administrador de bases de datos
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: ecommerce-phpmyadmin
+    restart: unless-stopped
+    environment:
+      # Configuración para conectar a múltiples servidores
+      PMA_HOSTS: db-primary,db-replica
+      PMA_PORTS: 3306,3306
+      PMA_VERBOSES: Primary (Escrituras),Replica (Lecturas)
+      PMA_USER: root
+      PMA_PASSWORD: ${DB_PRIMARY_ROOT_PASSWORD}
+      # Configuración adicional
+      UPLOAD_LIMIT: 100M
+      MEMORY_LIMIT: 512M
+      MAX_EXECUTION_TIME: 600
+    ports:
+      - "8081:80"        # ← aquí cambiaste de 8080 a 8081
+    networks:
+      - backend
+    depends_on:
+      db-primary:
+        condition: service_healthy
+      db-replica:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+networks:
+  backend:
+    driver: bridge
+    name: ecommerce-backend-network
+  frontend:
+    driver: bridge
+    name: ecommerce-frontend-network
+
+volumes:
+  db_primary_data:
+    name: ecommerce-db-primary-data
+  db_replica_data:
+    name: ecommerce-db-replica-data
