@@ -1,43 +1,47 @@
 #!/bin/bash
-# mysql-slave/init/setup-slave.sh
-
 set -e
 
-echo "==== Configurando Slave automáticamente ===="
+echo "==== Configurando réplica automáticamente ===="
 
-# Esperar a que el master esté completamente listo
-echo "Esperando al master..."
-sleep 30
-
-# Variables con nombres correctos
 MASTER_HOST="${MASTER_HOST:-db-primary}"
 MASTER_USER="${MASTER_USER:-replicator}"
 MASTER_PASSWORD="${MASTER_PASSWORD:-replicator_password_123}"
 
-# Esperar a que MySQL Slave esté listo
+# Esperar a que MySQL de la réplica esté listo
 until mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -e "SELECT 1;" &> /dev/null; do
-    echo "Esperando MySQL Slave..."
-    sleep 3
+  echo "Esperando MySQL réplica..."
+  sleep 3
 done
 
-echo "== Obteniendo archivo de log y posición del master =="
-FILE=$(mysql -h $MASTER_HOST -u$MASTER_USER -p$MASTER_PASSWORD -e "SHOW MASTER STATUS\G" | grep File | awk '{print $2}')
-POSITION=$(mysql -h $MASTER_HOST -u$MASTER_USER -p$MASTER_PASSWORD -e "SHOW MASTER STATUS\G" | grep Position | awk '{print $2}')
+echo "== Obteniendo binlog y posición del master =="
+FILE=$(mysql -h "$MASTER_HOST" -u"$MASTER_USER" -p"$MASTER_PASSWORD" -e "SHOW MASTER STATUS\G" | grep File | awk '{print $2}')
+POSITION=$(mysql -h "$MASTER_HOST" -u"$MASTER_USER" -p"$MASTER_PASSWORD" -e "SHOW MASTER STATUS\G" | grep Position | awk '{print $2}')
 
-echo "== Iniciando replicación con archivo: $FILE | posición: $POSITION =="
+echo "Master file: $FILE, position: $POSITION"
+
+echo "== Configurando REPLICATION SOURCE en la réplica =="
 
 mysql -uroot -p"$MYSQL_ROOT_PASSWORD" <<EOF
-STOP SLAVE;
-CHANGE MASTER TO
-  MASTER_HOST='$MASTER_HOST',
-  MASTER_USER='$MASTER_USER',
-  MASTER_PASSWORD='$MASTER_PASSWORD',
-  MASTER_LOG_FILE='$FILE',
-  MASTER_LOG_POS=$POSITION;
-START SLAVE;
+STOP REPLICA;
+RESET REPLICA ALL;
+
+CHANGE REPLICATION SOURCE TO
+  SOURCE_HOST='$MASTER_HOST',
+  SOURCE_PORT=3306,
+  SOURCE_USER='$MASTER_USER',
+  SOURCE_PASSWORD='$MASTER_PASSWORD',
+  SOURCE_LOG_FILE='$FILE',
+  SOURCE_LOG_POS=$POSITION;
+
+START REPLICA;
+
+-- Opcional: dejar la réplica en solo lectura
+SET GLOBAL read_only = 1;
+SET GLOBAL super_read_only = 1;
 EOF
 
-# Verificar estado
-mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -e "SHOW SLAVE STATUS\G"
+echo "== Estado de la réplica (resumen) =="
+mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -e "SHOW REPLICA STATUS\G" | egrep 'Replica_IO_Running|Replica_SQL_Running|Seconds_Behind_Source' || \
+mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -e "SHOW SLAVE STATUS\G" | egrep 'Slave_IO_Running|Slave_SQL_Running|Seconds_Behind_Master'
 
-echo "Replicación configurada correctamente ✔️"
+echo "==== Réplica configurada automáticamente ✔️ ===="
