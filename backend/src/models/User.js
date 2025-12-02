@@ -6,7 +6,7 @@ class User {
         const { nombre, email, password, telefono, direccion } = userData;
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const [result] = await db.master.execute(
+        const [result] = await db.query(
             `INSERT INTO usuarios (nombre, email, password, telefono, direccion, role, fecha_registro) 
              VALUES (?, ?, ?, ?, ?, 'cliente', NOW())`,
             [nombre, email, hashedPassword, telefono || null, direccion || null]
@@ -16,7 +16,7 @@ class User {
     }
 
     static async findByEmail(email) {
-        const [rows] = await db.slave.execute(
+        const [rows] = await db.query(
             'SELECT * FROM usuarios WHERE email = ?',
             [email]
         );
@@ -24,7 +24,7 @@ class User {
     }
 
     static async findById(id) {
-        const [rows] = await db.slave.execute(
+        const [rows] = await db.query(
             'SELECT id, nombre, email, telefono, direccion, role, fecha_registro FROM usuarios WHERE id = ?',
             [id]
         );
@@ -33,7 +33,7 @@ class User {
 
     static async update(id, userData) {
         const { nombre, telefono, direccion } = userData;
-        const [result] = await db.master.execute(
+        const [result] = await db.query(
             'UPDATE usuarios SET nombre = ?, telefono = ?, direccion = ? WHERE id = ?',
             [nombre, telefono, direccion, id]
         );

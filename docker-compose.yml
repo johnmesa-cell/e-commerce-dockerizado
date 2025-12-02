@@ -67,21 +67,11 @@ services:
     environment:
       NODE_ENV: production
       PORT: ${BACKEND_PORT:-3000}
-      
-      # Configuración Master (escrituras)
       DB_MASTER_HOST: db-primary
       DB_MASTER_PORT: 3306
       DB_MASTER_USER: ${DB_USER}
       DB_MASTER_PASSWORD: ${DB_PASSWORD}
       DB_MASTER_DATABASE: ${DB_NAME}
-      
-      # Configuración Slave (lecturas)
-      DB_SLAVE_HOST: db-replica
-      DB_SLAVE_PORT: 3306
-      DB_SLAVE_USER: ${DB_USER}
-      DB_SLAVE_PASSWORD: ${DB_PASSWORD}
-      DB_SLAVE_DATABASE: ${DB_NAME}
-      
       JWT_SECRET: ${JWT_SECRET}
     ports:
       - "${BACKEND_PORT:-3000}:3000"
@@ -93,14 +83,8 @@ services:
     depends_on:
       db-primary:
         condition: service_healthy
-      db-replica:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"] 
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
+    # ELIMINAR el healthcheck de aquí, ya está en el Dockerfile
+
 
   # Frontend
   frontend:

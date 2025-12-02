@@ -2,7 +2,7 @@ const db = require('../db');
 
 class Category {
     static async create(nombre, descripcion) {
-        const [result] = await db.master.execute(
+        const [result] = await db.query(
             'INSERT INTO categorias (nombre, descripcion) VALUES (?, ?)',
             [nombre, descripcion || null]
         );
@@ -10,14 +10,14 @@ class Category {
     }
 
     static async findAll() {
-        const [rows] = await db.slave.execute(
+        const [rows] = await db.query(
             'SELECT * FROM categorias WHERE activo = 1 ORDER BY nombre'
         );
         return rows;
     }
 
     static async findById(id) {
-        const [rows] = await db.slave.execute(
+        const [rows] = await db.query(
             'SELECT * FROM categorias WHERE id = ? AND activo = 1',
             [id]
         );
@@ -25,7 +25,7 @@ class Category {
     }
 
     static async update(id, nombre, descripcion) {
-        const [result] = await db.master.execute(
+        const [result] = await db.query(
             'UPDATE categorias SET nombre = ?, descripcion = ? WHERE id = ?',
             [nombre, descripcion, id]
         );
@@ -33,7 +33,7 @@ class Category {
     }
 
     static async delete(id) {
-        const [result] = await db.master.execute(
+        const [result] = await db.query(
             'UPDATE categorias SET activo = 0 WHERE id = ?',
             [id]
         );

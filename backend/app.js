@@ -22,19 +22,6 @@ if (serverConfig.nodeEnv === 'development') {
   app.use(morgan('combined'));
 }
 
-/**
- * Servir FRONTEND estático
- * Estructura esperada:
- *  - /backend/app.js   (este archivo)
- *  - /frontend/index.html
- */
-app.use(express.static(path.join(__dirname, '../frontend')));
-
-// Ruta raíz: devolver el index.html del frontend
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/index.html'));
-});
-
 // Rutas principales de la API
 app.use('/api', routes);
 
